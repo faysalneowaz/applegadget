@@ -1,3 +1,4 @@
+import 'package:applegadget/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -34,7 +35,7 @@ class UserProfilePage extends StatelessWidget {
 
   Future<String> fetchUserProfile() async {
     final response = await http.get(
-      Uri.parse('https://peanut.ifxdb.com/docs/clientcabinet/index.html/GetAccountInformation?login=$login&token=$accessToken'),
+      Uri.parse(baseUrl + 'GetAccountInformation?login=$login&token=$accessToken'),
     );
 
     if (response.statusCode == 200) {
