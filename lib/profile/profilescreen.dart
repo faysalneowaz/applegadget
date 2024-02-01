@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:applegadget/constant.dart';
+import 'package:applegadget/model/profilemodel.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class UserProfilePage extends StatelessWidget {
@@ -25,7 +29,7 @@ class UserProfilePage extends StatelessWidget {
             // Display user profile data
             // You can create widgets to display the data as per your UI design
             return Center(
-              child: Text('User Profile Data: ${snapshot.data}'),
+              child: Text('User Profile Data: ${snapshot.data!.address}'),
             );
           }
         },
@@ -33,15 +37,43 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Future<String> fetchUserProfile() async {
-    final response = await http.get(
-      Uri.parse(baseUrl + 'GetAccountInformation?login=$login&token=$accessToken'),
-    );
+  Future<ProfileModel> fetchUserProfile() async {
 
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception('Failed to load user profile');
+    ProfileModel profileModel = new ProfileModel();
+    var body = json.encode({
+      'login': login,
+      'token': accessToken,
+    });
+    var header = {"Content-Type": "application/json"};
+
+    print(body + header.toString());
+    try {
+      var response = await http.post(
+        Uri.parse(baseUrl+'/api/ClientCabinetBasic/IsAccountCredentialsCorrect'),
+        body: body,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        },
+      );
+
+      if (response.statusCode == 200) {
+
+        profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+        print(profileModel.address);
+      } else {
+        print(await response.body);
+        Fluttertoast.showToast(
+            msg: "Not Getting any data",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    } catch (e) {
+      print(e);
     }
+    return profileModel;
   }
 }

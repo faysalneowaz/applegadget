@@ -63,26 +63,45 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> login() async {
-    final response = await http.post(
-      Uri.parse(baseUrl+"/api/ClientCabinetBasic/IsAccountCredentialsCorrect"),
-      body: {
-        'login': loginController.text,
-        'password': passwordController.text,
-      },
-    );
+    var body = json.encode({
+      'login': int.parse(loginController.text),
+      'password': passwordController.text,
+    });
+    var header = {"Content-Type": "application/json"};
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      accessToken = data['accessToken'];
-    } else {
-      Fluttertoast.showToast(
-          msg: "Login Failed",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
+    print(body + header.toString());
+    try {
+      var response = await http.post(
+        Uri.parse(baseUrl+'/api/ClientCabinetBasic/IsAccountCredentialsCorrect'),
+        body: json.encode({
+          "login": 2088888,
+          "password": "ral11lod"
+        }),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        },
       );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(await response.body);
+        if (data['token'] != null) {
+          accessToken = data['token'];
+        } else {
+          print("AccessToken is null");
+        }
+      } else {
+        print(await response.body);
+        Fluttertoast.showToast(
+            msg: "Login Failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }
