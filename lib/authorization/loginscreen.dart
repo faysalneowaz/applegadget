@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                     context,
                      MaterialPageRoute(
                       builder: (context) => UserProfilePage(
-                        login: loginController.text,
+                        login: int.parse(loginController.text),
                         accessToken: accessToken,
                       ),
                     ),
@@ -73,10 +73,11 @@ class _LoginPageState extends State<LoginPage> {
     try {
       var response = await http.post(
         Uri.parse(baseUrl+'/api/ClientCabinetBasic/IsAccountCredentialsCorrect'),
-        body: json.encode({
-          "login": 2088888,
-          "password": "ral11lod"
-        }),
+        body: body,
+        // json.encode({
+        //   "login": 2088888,
+        //   "password": "ral11lod"
+        // }),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json'

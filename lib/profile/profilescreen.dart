@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class UserProfilePage extends StatelessWidget {
-  final String login;
+  final int login;
   final String accessToken;
 
   UserProfilePage({required this.login, required this.accessToken});
@@ -49,7 +49,7 @@ class UserProfilePage extends StatelessWidget {
     print(body + header.toString());
     try {
       var response = await http.post(
-        Uri.parse(baseUrl+'/api/ClientCabinetBasic/IsAccountCredentialsCorrect'),
+        Uri.parse(baseUrl+'/api/ClientCabinetBasic/GetAccountInformation'),
         body: body,
         headers: {
           'Content-type': 'application/json',
